@@ -1,0 +1,128 @@
+FORTIGATE FIREWALL TROUBLESHOOTING KNOWLEDGE BASE
+
+1. INTERFACE CONNECTIVITY
+
+FortiGate interfaces should have the correct IP address, administrative status and physical link status.
+
+Useful CLI commands:
+
+get system interface physical
+show system interface
+get router info routing-table all
+
+When troubleshooting connectivity, verify:
+
+- Interface link status.
+- Correct IP address and subnet mask.
+- LAN and WAN interfaces are configured correctly.
+- Required routes are available.
+
+
+2. FIREWALL POLICY TROUBLESHOOTING
+
+FortiGate firewall policies control traffic between interfaces and networks.
+
+Useful commands:
+
+show firewall policy
+diagnose firewall iprope list
+
+When users cannot access another network or the internet, verify:
+
+- Correct incoming interface.
+- Correct outgoing interface.
+- Source network.
+- Destination network.
+- Required service.
+- Policy action is set to accept.
+- The required policy is enabled.
+
+Firewall policy order is important because traffic is evaluated against configured policies.
+
+
+3. NAT TROUBLESHOOTING
+
+Source NAT is commonly used when internal users access the internet.
+
+If LAN users can reach the firewall but cannot access the internet, verify whether NAT is enabled on the appropriate firewall policy.
+
+Useful command:
+
+show firewall policy
+
+Check that the correct outgoing WAN interface and NAT configuration are being used.
+
+
+4. ROUTING TROUBLESHOOTING
+
+FortiGate requires a valid route toward the destination.
+
+Useful commands:
+
+get router info routing-table all
+get router info routing-table details
+execute ping <destination>
+execute traceroute <destination>
+
+For internet access, verify that an appropriate default route exists.
+
+A typical default route uses:
+
+0.0.0.0/0
+
+with the ISP gateway as the next hop.
+
+If multiple WAN links are configured, verify which route is active.
+
+
+5. DNS TROUBLESHOOTING
+
+If users can reach internet IP addresses but cannot access websites by hostname, investigate DNS resolution.
+
+Useful commands:
+
+execute ping 8.8.8.8
+execute ping google.com
+
+Verify the DNS server configuration on the client and firewall.
+
+Successful IP connectivity with failed hostname connectivity usually indicates a DNS-related problem.
+
+
+6. POLICY AND TRAFFIC DEBUGGING
+
+FortiGate provides diagnostic commands for troubleshooting traffic flow.
+
+Useful commands:
+
+diagnose debug reset
+diagnose debug flow filter addr <ip-address>
+diagnose debug flow show console enable
+diagnose debug enable
+diagnose debug flow trace start 10
+
+After troubleshooting, debugging should be disabled.
+
+diagnose debug disable
+
+Debug flow can help identify whether traffic is denied by a policy, routing decision or another firewall process.
+
+
+7. INTERNET ACCESS TROUBLESHOOTING
+
+If internal users cannot access the internet, use a structured troubleshooting process.
+
+Recommended sequence:
+
+1. Verify client IP configuration.
+2. Verify the client's default gateway.
+3. Ping the FortiGate LAN interface.
+4. Verify the FortiGate WAN interface.
+5. Check the routing table.
+6. Verify the default route.
+7. Verify the firewall policy.
+8. Verify NAT.
+9. Test connectivity to a public IP address.
+10. Verify DNS resolution.
+
+If some internal networks have internet access while another network does not, investigate the firewall policy, source network configuration, routing and NAT settings for the affected network.

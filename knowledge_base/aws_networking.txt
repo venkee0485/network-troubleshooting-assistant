@@ -1,0 +1,76 @@
+AWS NETWORKING TROUBLESHOOTING KNOWLEDGE BASE
+
+1. VPC AND SUBNET
+
+Amazon VPC provides isolated networking for AWS resources.
+
+Verify:
+- VPC CIDR range.
+- Subnet CIDR range.
+- Resource subnet.
+- IP address configuration.
+
+Incorrect subnet or addressing configuration can prevent expected communication.
+
+
+2. SECURITY GROUP
+
+Security groups act as stateful virtual firewalls for AWS resources.
+
+When traffic cannot reach an EC2 instance, verify:
+- Inbound rules.
+- Outbound rules.
+- Protocol.
+- Port.
+- Source or destination.
+
+The required application port must be permitted by the appropriate security group.
+
+
+3. NETWORK ACL
+
+Network ACLs operate at the subnet level and are stateless.
+
+Verify both inbound and outbound rules.
+
+A restrictive network ACL can block traffic even when the EC2 security group permits it.
+
+
+4. ROUTE TABLE
+
+Each subnet is associated with a route table.
+
+Verify:
+- Destination network.
+- Route target.
+- Local VPC routes.
+- Internet gateway route.
+- NAT gateway route where required.
+
+A public subnet normally requires an appropriate route to an Internet Gateway for internet connectivity.
+
+
+5. INTERNET CONNECTIVITY
+
+When an EC2 instance cannot access the internet, verify:
+- Subnet route table.
+- Internet Gateway or NAT Gateway.
+- Security group.
+- Network ACL.
+- Public IP where required.
+- Operating system firewall.
+
+Private subnet instances commonly use a NAT Gateway or another approved outbound mechanism for internet access.
+
+
+6. AWS NETWORK TROUBLESHOOTING WORKFLOW
+
+1. Verify instance IP configuration.
+2. Verify VPC and subnet.
+3. Check the subnet route table.
+4. Verify the required route target.
+5. Check security group rules.
+6. Check network ACL rules.
+7. Verify Internet Gateway or NAT Gateway when required.
+8. Check the instance operating system firewall.
+9. Test DNS resolution.

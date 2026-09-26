@@ -1,0 +1,236 @@
+CISCO SWITCHING TROUBLESHOOTING KNOWLEDGE BASE
+
+1. VLAN FUNDAMENTALS
+
+A Virtual Local Area Network (VLAN) logically separates devices into different Layer 2 broadcast domains.
+
+Devices belonging to the same VLAN can normally communicate at Layer 2 without requiring routing. Communication between different VLANs requires a Layer 3 device such as a router or multilayer switch.
+
+Common VLAN-related problems include:
+
+- VLAN does not exist on the switch.
+- Access port is assigned to the wrong VLAN.
+- VLAN is not permitted across a trunk link.
+- Trunk configuration mismatch.
+- Incorrect default gateway on the end device.
+- SVI is administratively down or operationally down.
+- Inter-VLAN routing is not configured.
+- ACL rules prevent traffic from the VLAN.
+- Upstream router or firewall does not have a route for the VLAN subnet.
+
+
+2. ACCESS PORT TROUBLESHOOTING
+
+An access port normally carries traffic for one VLAN.
+
+Example configuration:
+
+interface GigabitEthernet0/1
+ switchport mode access
+ switchport access vlan 20
+
+Useful verification commands:
+
+show vlan brief
+show interfaces status
+show interfaces GigabitEthernet0/1 switchport
+show mac address-table
+
+When troubleshooting an access port, verify:
+
+- The interface is operational.
+- The expected VLAN exists.
+- The interface belongs to the correct VLAN.
+- The switch learns the endpoint MAC address.
+- The endpoint has the correct IP address, subnet mask and default gateway.
+
+
+3. TRUNK TROUBLESHOOTING
+
+A trunk link transports traffic belonging to multiple VLANs between networking devices.
+
+Example:
+
+interface GigabitEthernet0/24
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30
+
+Useful commands:
+
+show interfaces trunk
+show interfaces switchport
+show vlan brief
+
+If one VLAN works across a trunk while another VLAN does not, verify whether the affected VLAN is included in the trunk allowed VLAN list.
+
+For example, if VLAN 10 works but VLAN 20 does not, VLAN 20 may be missing from the allowed VLAN configuration.
+
+Example correction:
+
+interface GigabitEthernet0/24
+ switchport trunk allowed vlan add 20
+
+
+4. SWITCHED VIRTUAL INTERFACE
+
+A Switched Virtual Interface (SVI) provides Layer 3 connectivity for a VLAN on a multilayer switch.
+
+Example:
+
+interface Vlan20
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown
+
+Useful commands:
+
+show ip interface brief
+show interfaces vlan 20
+show ip route
+
+If the SVI is down, verify:
+
+- VLAN 20 exists.
+- At least one active Layer 2 interface belongs to VLAN 20 when required by the platform.
+- The SVI is not administratively shut down.
+- The IP address and subnet mask are correct.
+
+
+5. INTER-VLAN ROUTING
+
+Communication between different VLANs requires routing.
+
+On a multilayer Cisco switch, IP routing can be enabled using:
+
+ip routing
+
+Useful verification commands:
+
+show ip route
+show ip interface brief
+show running-config | include ip routing
+
+If hosts within VLAN 20 communicate locally but cannot communicate with other networks, investigate the default gateway and Layer 3 routing configuration.
+
+
+6. DHCP TROUBLESHOOTING
+
+If users in a VLAN cannot obtain valid IP configuration, verify DHCP operation.
+
+Useful endpoint checks:
+
+ipconfig /all
+
+Useful Cisco commands:
+
+show ip dhcp binding
+show ip dhcp pool
+
+When the DHCP server resides in another network, the VLAN interface may require a DHCP relay configuration.
+
+Example:
+
+interface Vlan20
+ ip helper-address 192.168.1.10
+
+Incorrect or missing DHCP relay configuration can prevent clients from receiving addresses from a remote DHCP server.
+
+
+7. ACL TROUBLESHOOTING
+
+Access Control Lists can permit or deny traffic between networks.
+
+Useful commands:
+
+show access-lists
+show ip access-lists
+show running-config | include access-group
+
+When only one VLAN cannot reach a destination, check whether an ACL specifically denies the subnet belonging to that VLAN.
+
+Verify both the ACL entries and the interface/direction where the ACL is applied.
+
+
+8. INTERNET ACCESS TROUBLESHOOTING
+
+When one VLAN can access the internet and another VLAN cannot, troubleshoot systematically.
+
+Recommended workflow:
+
+1. Verify client IP address.
+2. Verify subnet mask.
+3. Verify default gateway.
+4. Ping the local gateway.
+5. Verify VLAN membership.
+6. Verify trunk VLAN allowance.
+7. Verify the SVI or router subinterface.
+8. Verify Layer 3 routing.
+9. Verify ACL configuration.
+10. Verify upstream firewall policies.
+11. Verify NAT configuration.
+12. Verify DNS resolution.
+
+If VLAN 10 has internet access while VLAN 20 does not, the WAN connection itself is likely operational. Investigation should focus on configuration specific to VLAN 20 and its subnet.
+
+
+9. SPANNING TREE TROUBLESHOOTING
+
+Spanning Tree Protocol prevents Layer 2 switching loops.
+
+Useful commands:
+
+show spanning-tree
+show spanning-tree vlan 20
+show spanning-tree interface GigabitEthernet0/1
+
+When troubleshooting connectivity, verify that an expected forwarding interface has not entered a blocking or inconsistent state.
+
+
+10. ETHERCHANNEL TROUBLESHOOTING
+
+EtherChannel combines multiple physical interfaces into one logical link.
+
+Useful commands:
+
+show etherchannel summary
+show interfaces port-channel
+show lacp neighbor
+
+Common problems include:
+
+- Channel mode mismatch.
+- Trunk configuration mismatch.
+- VLAN configuration mismatch.
+- Speed or duplex inconsistencies.
+- Incorrect LACP configuration.
+
+
+11. GENERAL CISCO SWITCH TROUBLESHOOTING WORKFLOW
+
+A structured troubleshooting process should move from basic connectivity toward higher-layer configuration.
+
+Recommended sequence:
+
+1. Check physical interface status.
+2. Check interface errors.
+3. Verify VLAN membership.
+4. Verify trunk configuration.
+5. Verify MAC address learning.
+6. Verify IP addressing.
+7. Verify default gateway.
+8. Verify SVI status.
+9. Verify routing.
+10. Verify ACLs.
+11. Verify upstream firewall and NAT.
+12. Verify DNS if IP connectivity succeeds but hostname resolution fails.
+
+Useful general commands:
+
+show interfaces status
+show interfaces
+show vlan brief
+show interfaces trunk
+show mac address-table
+show ip interface brief
+show ip route
+show access-lists
+show running-config

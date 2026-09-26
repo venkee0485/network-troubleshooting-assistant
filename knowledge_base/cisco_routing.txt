@@ -1,0 +1,148 @@
+CISCO ROUTING TROUBLESHOOTING KNOWLEDGE BASE
+
+1. ROUTING FUNDAMENTALS
+
+Routers and multilayer switches use the routing table to determine the path toward destination networks.
+
+Useful commands:
+
+show ip route
+show ip interface brief
+show running-config
+
+When troubleshooting routing problems, verify interface status, IP addressing, subnet masks, routing-table entries and next-hop reachability.
+
+
+2. STATIC ROUTING
+
+A static route manually defines a path toward a destination network.
+
+Example:
+
+ip route 192.168.20.0 255.255.255.0 10.0.0.2
+
+Useful commands:
+
+show ip route
+show ip route static
+show running-config | include ip route
+
+Common problems include:
+
+- Incorrect destination network.
+- Incorrect subnet mask.
+- Wrong next-hop address.
+- Next-hop router is unreachable.
+- Exit interface is down.
+- Missing return route.
+
+
+3. DEFAULT ROUTE
+
+A default route is used when no more specific route exists for a destination.
+
+Example:
+
+ip route 0.0.0.0 0.0.0.0 10.0.0.1
+
+Useful command:
+
+show ip route
+
+A missing or incorrect default route can prevent access to external networks even when local network communication works.
+
+
+4. OSPF TROUBLESHOOTING
+
+OSPF is a dynamic link-state routing protocol.
+
+Useful commands:
+
+show ip ospf neighbor
+show ip ospf interface
+show ip ospf database
+show ip route ospf
+
+When OSPF neighbors do not form correctly, verify:
+
+- IP connectivity between neighbors.
+- OSPF area configuration.
+- Network statements.
+- Interface participation.
+- Hello and dead timers.
+- Authentication settings.
+- MTU configuration.
+
+If an OSPF neighbor relationship exists but a route is missing, verify whether the required network is being advertised.
+
+
+5. ROUTE SELECTION
+
+A router selects routes based on available routing information.
+
+Useful command:
+
+show ip route
+
+When multiple routes exist, investigate:
+
+- Prefix length.
+- Administrative distance.
+- Routing protocol metrics.
+- Static routes.
+- Default routes.
+
+Always verify the actual routing table rather than assuming that a configured route is being used.
+
+
+6. NEXT-HOP TROUBLESHOOTING
+
+The next-hop address should be reachable through a directly connected network or another valid route.
+
+Useful commands:
+
+ping <next-hop-address>
+traceroute <destination-address>
+show ip route <destination-address>
+
+If the next hop cannot be reached, verify:
+
+- Interface status.
+- IP address and subnet mask.
+- Layer 2 connectivity.
+- ARP resolution.
+- Routing configuration.
+
+
+7. RETURN PATH
+
+Successful communication normally requires routing in both directions.
+
+A packet may reach the destination but fail to return if the remote router does not have a route back to the source network.
+
+When one-way connectivity is suspected, inspect routing tables on both sides.
+
+
+8. ROUTING TROUBLESHOOTING WORKFLOW
+
+Recommended sequence:
+
+1. Verify physical and logical interface status.
+2. Verify interface IP addresses.
+3. Verify subnet masks.
+4. Ping the directly connected next hop.
+5. Check the routing table.
+6. Verify the required destination route.
+7. Verify the next-hop address.
+8. Use traceroute to identify where connectivity stops.
+9. Check the remote router for a return route.
+10. Check ACL or firewall restrictions if routing appears correct.
+
+Useful commands:
+
+show ip interface brief
+show ip route
+show arp
+ping
+traceroute
+show access-lists

@@ -1,0 +1,80 @@
+AZURE NETWORKING TROUBLESHOOTING KNOWLEDGE BASE
+
+1. VIRTUAL NETWORK AND SUBNET
+
+Azure Virtual Networks provide network connectivity for Azure resources.
+
+Verify:
+- VNet address space.
+- Subnet address range.
+- Resource subnet assignment.
+- IP configuration.
+
+Overlapping or incorrect address ranges can cause connectivity problems.
+
+
+2. NETWORK SECURITY GROUP
+
+Network Security Groups control inbound and outbound network traffic.
+
+When connectivity fails, verify:
+- Inbound security rules.
+- Outbound security rules.
+- Source address.
+- Destination address.
+- Protocol.
+- Port.
+- Rule priority.
+
+A higher-priority deny rule can prevent traffic even when another allow rule exists.
+
+
+3. ROUTE TABLES
+
+Azure route tables can control traffic paths between subnets and network appliances.
+
+Verify:
+- Effective routes.
+- User-defined routes.
+- Next-hop type.
+- Destination prefix.
+
+Incorrect user-defined routes can send traffic to the wrong next hop.
+
+
+4. VIRTUAL MACHINE CONNECTIVITY
+
+If an Azure VM cannot communicate with another resource, verify:
+- VM network interface.
+- Private IP configuration.
+- Subnet.
+- NSG rules.
+- Effective routes.
+- Operating system firewall.
+
+Both Azure network controls and the guest operating system can affect connectivity.
+
+
+5. INTERNET CONNECTIVITY
+
+For internet connectivity problems, investigate:
+- NSG outbound rules.
+- Routing.
+- Public IP configuration when required.
+- NAT configuration.
+- Firewall or network virtual appliance.
+
+Test whether the issue affects all resources or only a particular subnet or VM.
+
+
+6. AZURE NETWORK TROUBLESHOOTING WORKFLOW
+
+1. Verify VM IP configuration.
+2. Verify VNet and subnet.
+3. Check NSG rules.
+4. Check effective security rules.
+5. Check effective routes.
+6. Verify user-defined routes.
+7. Check Azure Firewall or network appliance if present.
+8. Check the guest operating system firewall.
+9. Test DNS resolution.

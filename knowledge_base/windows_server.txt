@@ -1,0 +1,91 @@
+WINDOWS SERVER NETWORK TROUBLESHOOTING KNOWLEDGE BASE
+
+1. IP CONFIGURATION
+
+Incorrect IP configuration can prevent communication with local and remote networks.
+
+Useful commands:
+
+ipconfig
+ipconfig /all
+ping
+tracert
+
+Verify:
+- IP address.
+- Subnet mask.
+- Default gateway.
+- DNS server addresses.
+
+
+2. DNS TROUBLESHOOTING
+
+DNS converts hostnames into IP addresses.
+
+Useful commands:
+
+nslookup
+ipconfig /displaydns
+ipconfig /flushdns
+
+If a server can reach a destination using an IP address but not a hostname, investigate DNS configuration and name resolution.
+
+
+3. DHCP TROUBLESHOOTING
+
+DHCP automatically provides IP configuration to clients.
+
+Useful commands:
+
+ipconfig /release
+ipconfig /renew
+ipconfig /all
+
+Check:
+- DHCP service status.
+- DHCP scope.
+- Available addresses.
+- Scope options.
+- Default gateway option.
+- DNS server option.
+
+If the DHCP server is located on another subnet, verify that DHCP relay is correctly configured on the network device.
+
+
+4. WINDOWS FIREWALL
+
+Windows Defender Firewall can permit or block network traffic.
+
+When a service is unreachable, verify:
+- Required firewall rule.
+- Protocol.
+- TCP or UDP port.
+- Network profile.
+- Inbound and outbound rules.
+
+
+5. ACTIVE DIRECTORY AND DNS
+
+Active Directory depends heavily on DNS.
+
+Domain clients should normally use the appropriate internal DNS server for Active Directory name resolution.
+
+When domain communication fails, verify:
+- DNS configuration.
+- Domain controller reachability.
+- Name resolution.
+- Time synchronization.
+- Required services.
+
+
+6. GENERAL TROUBLESHOOTING WORKFLOW
+
+1. Check network adapter status.
+2. Run ipconfig /all.
+3. Verify IP address and subnet mask.
+4. Verify default gateway.
+5. Ping the local gateway.
+6. Test remote IP connectivity.
+7. Test DNS resolution with nslookup.
+8. Check Windows Firewall.
+9. Verify the required Windows service.

@@ -1,13 +1,14 @@
 import streamlit as st
 import os
 from dotenv import load_dotenv
-from google import genai
+from groq import Groq
+from rag import retrieve_relevant_context
 
 # Load environment variables
 load_dotenv()
 
-api_key = os.getenv("GEMINI_API_KEY")
-client = genai.Client(api_key=api_key)
+api_key = os.getenv("GROQ_API_KEY")
+client = Groq(api_key=api_key)
 
 app_username = os.getenv("APP_USERNAME")
 app_password = os.getenv("APP_PASSWORD")
@@ -113,11 +114,47 @@ if st.button("🔍 Analyze & Troubleshoot", type="primary"):
 
     if problem.strip():
 
+        # Retrieve relevant knowledge from the local knowledge base
+        query = f"{device} {problem}"
+
+        retrieved_results = retrieve_relevant_context(
+    query,
+    top_k=4
+)
+
+        if retrieved_results:
+            retrieved_context = "\n\n".join(
+                result["content"]
+                for result in retrieved_results
+            )
+        else:
+            retrieved_context = (
+                "No directly relevant information was found "
+                "in the local knowledge base."
+            )
+
         prompt = f"""
         You are a professional network troubleshooting assistant.
 
-        Device or Technology: {device}
-        Network Problem: {problem}
+        Device or Technology:
+        {device}
+
+        Network Problem:
+        {problem}
+
+        Retrieved Knowledge Base Context:
+        {retrieved_context}
+
+        Use the retrieved knowledge-base context when it is
+        relevant to the reported problem.
+
+        If the retrieved context does not contain enough
+        information to completely troubleshoot the issue,
+        you may supplement it with your general networking
+        knowledge.
+
+        Do not invent command outputs or claim that a command
+        was executed.
 
         Analyze the network problem and provide the response
         using the following structure:
@@ -132,20 +169,29 @@ if st.button("🔍 Analyze & Troubleshoot", type="primary"):
         Keep the response practical, technically accurate,
         structured, and easy to understand.
         """
-
         try:
             with st.spinner("Analyzing the network problem..."):
 
-                interaction = client.interactions.create(
-                    model="gemini-3.6-flash",
-                    input=prompt
+                response = client.chat.completions.create(
+                    model="openai/gpt-oss-120b",
+                    messages=[
+                        {
+                            "role": "user",
+                            "content": prompt
+                        }
+                    ]
+                )
+
+                response_text = (
+                    response.choices[0]
+                    .message.content
                 )
 
             st.success("Analysis completed successfully.")
 
             st.divider()
 
-            # Analysis summary
+        # Analysis summary
             st.subheader("📋 Troubleshooting Analysis")
 
             col1, col2 = st.columns(2)
@@ -161,10 +207,48 @@ if st.button("🔍 Analyze & Troubleshoot", type="primary"):
             st.markdown("**Reported Problem**")
             st.info(problem)
 
-            # AI response
-            st.subheader("🤖 AI Troubleshooting Response")
-            st.markdown(interaction.output_text)
+        # Display retrieved RAG context
+            with st.expander(
+                "📚 Retrieved Knowledge Base Context"
+            ):
 
+                if retrieved_results:
+
+                    for number, result in enumerate(
+                        retrieved_results,
+                        start=1
+                    ):
+                        st.markdown(
+                            f"**Retrieved Chunk {number}**"
+                        )
+
+                        st.caption(
+                            f"Source: {result['source']} | "
+                            f"Similarity: {result['score']:.4f}"
+                        )
+
+                        st.write(result["content"])
+
+                        st.divider()
+
+                else:
+                    st.info(
+                        "No relevant knowledge-base "
+                        "content was retrieved."
+                    )
+
+        # AI response
+            st.subheader("🤖 AI Troubleshooting Response")
+            st.markdown(response_text)
+
+        except Exception as e:
+            st.error(
+                "Unable to generate the troubleshooting response. "
+                "Please try again."
+            )
+
+            with st.expander("Technical Details"):
+                st.code(str(e))
         except Exception as e:
             st.error(
                 "Unable to generate the troubleshooting response. "

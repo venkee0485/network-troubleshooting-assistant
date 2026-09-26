@@ -1,0 +1,82 @@
+PALO ALTO FIREWALL TROUBLESHOOTING KNOWLEDGE BASE
+
+1. INTERFACE CONNECTIVITY
+
+Verify that the required Layer 3 interfaces are operational and configured with the correct IP addresses.
+
+Check:
+- Interface status.
+- IP address and subnet mask.
+- Security zone assignment.
+- Virtual router assignment.
+
+
+2. SECURITY POLICY TROUBLESHOOTING
+
+Palo Alto security policies determine whether traffic between zones is permitted or denied.
+
+When traffic fails, verify:
+- Source zone.
+- Destination zone.
+- Source address.
+- Destination address.
+- Application and service.
+- Security policy action.
+- Policy order.
+
+Traffic logs can help determine which security rule processed the connection.
+
+
+3. NAT TROUBLESHOOTING
+
+NAT policies translate source or destination addresses.
+
+For internet access problems, verify:
+- Correct source zone.
+- Correct destination zone.
+- Source address.
+- Destination interface.
+- Source translation configuration.
+
+A security policy may permit traffic while incorrect NAT configuration still prevents internet connectivity.
+
+
+4. ROUTING TROUBLESHOOTING
+
+Verify that the virtual router contains an appropriate route toward the destination.
+
+Check:
+- Connected routes.
+- Static routes.
+- Default route.
+- Next-hop reachability.
+
+Ping and traceroute can help identify connectivity problems.
+
+
+5. TRAFFIC LOGS
+
+Traffic logs provide useful information about sessions processed by the firewall.
+
+When troubleshooting, inspect:
+- Source and destination addresses.
+- Source and destination zones.
+- Application.
+- Action.
+- Security rule.
+- Session end reason.
+
+Logs can help determine whether traffic is allowed, denied or failing for another reason.
+
+
+6. GENERAL TROUBLESHOOTING WORKFLOW
+
+1. Verify client IP configuration.
+2. Verify firewall interface status.
+3. Verify security zones.
+4. Check routing.
+5. Verify security policy.
+6. Verify NAT policy.
+7. Inspect traffic logs.
+8. Test connectivity.
+9. Verify DNS when IP connectivity works but hostname resolution fails.
